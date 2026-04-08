@@ -2,28 +2,21 @@ pipeline {
     agent any
 
     stages {
-        stage('Git Pull') {
+        stage('Github Pull') {
             steps {
-                git 'https://github.com/seungwankim364/cicd-test.git'
+                git branch: 'main', url: 'https://github.com/seungwankim364/cicd-test.git'
             }
         }
-
-        stage('Build') {
+        stage('Git Clone end') {
             steps {
-                sh 'echo build start'
+                sh 'touch cicd-test.txt'
+                sh 'echo "git clone end"' > cicd-test.txt
             }
         }
-
-        stage('Test') {
-            steps {
-                sh 'echo test start'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'echo deploy start'
-            }
+        Stage('Deploy Server') {
+            sshagent(credentials:[Deploy-Private-Key]) {
+                sh "scp -o StrictHostKeyChecking=no index.html ubuntu@43.202.55.59:/var/www/html"
         }
     }
+}
 }
