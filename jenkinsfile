@@ -7,16 +7,20 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/seungwankim364/cicd-test.git'
             }
         }
-        stage('Git Clone end') {
+
+        stage('Git Clone End') {
             steps {
                 sh 'touch cicd-test.txt'
-                sh 'echo "git clone end"' > cicd-test.txt
+                sh 'echo "git clone end" > cicd-test.txt'
             }
         }
-        Stage('Deploy Server') {
-            sshagent(credentials:[Deploy-Private-Key]) {
-                sh "scp -o StrictHostKeyChecking=no index.html ubuntu@43.202.55.59:/var/www/html"
+
+        stage('Deploy Server') {
+            steps {
+                sshagent(credentials: ['Deploy-Private-Key']) {
+                    sh 'scp -o StrictHostKeyChecking=no index.html ubuntu@43.202.55.59:/var/www/html/'
+                }
+            }
         }
     }
-}
 }
