@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        strDockerImage = "seungwankim364/cicd-test:0.1"
+    }
+
     stages {
         stage('Github Pull') {
             steps {
@@ -8,13 +12,23 @@ pipeline {
             }
         }
 
-        stage('Git Clone End') {
+        stage('Docker Image Build') {
             steps {
-                sh 'touch cicd-test.txt'
-                sh 'echo "git clone end" > cicd-test.txt'
+                script {
+                    oDockImage = docker.build(strDockerImage, "-f Dockerfile .")
+                }
             }
         }
-
+        stage('Docker Image Push') {
+            steps {
+                script {
+                    docker.withReistry('', docker-auth') {
+                        oDockImage.push()
+                    }
+                }
+            }
+        }   
+        
         stage('Deploy Server') {
             steps {
                 sshagent(credentials: ['Deploy-Private-Key']) {
