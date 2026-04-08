@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Pull') {
+            steps {
+                git 'https://github.com/seungwankim364/cicd-test.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo build start'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'echo test start'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'echo deploy start'
+            }
+        }
+    }
+}
