@@ -22,7 +22,7 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 script {
-                    docker.withReistry('', docker-auth') {
+                    docker.withRegistry('', 'docker-auth') {
                         oDockImage.push()
                     }
                 }
