@@ -1,8 +1,13 @@
+import java.text.SimpleDateFormat
+
+def TODAY = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date())
+
 pipeline {
     agent any
 
     environment {
-        strDockerImage = "seungwankim364/cicd-test:0.1"
+        strDockerTag = "${TODAY}_${BUILD_ID}"
+        strDockerImage = "seungwankim364/cicd-test:${strDockerTag}"
     }
 
     stages {
@@ -32,8 +37,8 @@ pipeline {
         stage('Deploy Server') {
             steps {
                 sshagent(credentials: ['Deploy-Private-Key']) {
-                    sh "scp -o StrictHostKeyChecking=no index.html ubuntu@43.202.55.59:/home/ubuntu"
-                    sh "ssh -o StrictHostKeyChecking=no ubuntu@43.202.55.59 sudo cp /home/ubuntu/index.html /var/www/html/"
+                    sh "scp -o StrictHostKeyChecking=no index.html ubuntu@43.202.55.59 docker container rm -f sampleweb"
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@43.202.55.59 docker run -d -p 80:80 --name sampleweb ${strDockerImage}"
                 }
             }
         }
